@@ -1,0 +1,91 @@
+<html>
+	<head>
+		<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+		<script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+		<style>
+			.controls {
+				opacity: 0.5;
+			}
+			.controls.connected {
+				opacity: 1;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="triggers">
+			<label>Servo</label>
+			<input type="number" value="0" id="servoNumber"/>
+			<label>Position</label>
+			<input type="number" value="580" id="servoPosition"/>
+			<button id="setServo" class="trigger-button">Set</button>
+		</div>
+
+		<div class="detachments">
+			<label>Servo</label>
+			<input type="number" value="0" id="detachServoNumber"/>
+			<button id="detachServo" class="trigger-button">Detach</button>
+		</div>
+
+		<div class="position">
+			<label>X</label>
+			<input type="number" value="0" id="x"/>
+			<label>Y</label>
+			<input type="number" value="0" id="y"/>
+			<label>Z</label>
+			<input type="number" value="0" id="z"/>
+			<label>Gripper</label>
+			<input type="number" value="0" id="gripper"/>
+			<button id="positionServo" class="trigger-button">Set</button>
+		</div>
+		<script>
+			var deviceId = '<ADD YOUR DEVICE ID HERE>',
+				accessToken = '<ADD YOUR ACCESS TOKEN HERE>';
+
+			var baseUrl = 'https://api.spark.io/v1/devices/' + deviceId + '/';
+
+			$('#setServo').on('click', function(ev) {
+				var servoNumber = parseInt($('#servoNumber').val(),10),
+					servoPosition = parseInt($('#servoPosition').val(),10);
+
+				$.ajax({
+					type: 'POST',
+					url: baseUrl + 'setServo',
+					data: {
+						access_token: accessToken,
+						args: servoNumber + "," + servoPosition
+					}
+				});
+			});
+			$('#detachServo').on('click', function(ev) {
+				var servoNumber = parseInt($('#detachServoNumber').val(),10);
+
+				$.ajax({
+					type: 'POST',
+					url: baseUrl + 'detachServo',
+					data: {
+						access_token: accessToken,
+						args: servoNumber
+					}
+				});
+			});
+			$('#positionServo').on('click', function(ev) {
+				var x = parseInt($('#x').val(),10),
+					y = parseInt($('#y').val(),10),
+					z = parseInt($('#z').val(),10),
+					g = parseInt($('#gripper').val(),10);
+
+				$.ajax({
+					type: 'POST',
+					url: baseUrl + 'setPosition',
+					data: {
+						access_token: accessToken,
+						args: x + "," + y + "," + z + "," + g
+					},
+					success: function(ev) {
+						console.log(JSON.stringify(ev));
+					}
+				});
+			});
+		</script>
+	</body>
+</html>
